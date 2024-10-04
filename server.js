@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import express, { urlencoded } from "express";
+import express from "express";
 import userRoute from "./routes/user.route.js"
 dotenv.config();
 
