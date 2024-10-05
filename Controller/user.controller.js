@@ -44,10 +44,25 @@ export const createUser = async (req, res) => {
 export const getUsers = async (req, res) => {
   try {
     const findUser = await prisma.user.findMany({
-      select: {
-        name: true,
-        email: true,
+     select : {
+      id: true, 
+      name : true,
+      email : true,
+      post : {
+        select : {
+          id : true,
+          title : true,
+          description : true
+        }
       },
+      comment : true,
+      _count : {
+        select : {
+          post : true,
+          comment : true
+        }
+      }
+     }
     });
 
     if (!findUser) {
@@ -80,10 +95,9 @@ export const getUser = async (req, res) => {
       where: {
         id: Number(userId),
       },
-      select: {
-        name: true,
-        email: true,
-      },
+      include : {
+        post : true,
+      }
     });
 
     if (!findUser) {

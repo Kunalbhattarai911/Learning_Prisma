@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import express from "express";
-import userRoute from "./routes/user.route.js"
 dotenv.config();
 
 const app = express();
@@ -18,4 +17,6 @@ app.listen(PORT, () => {
   console.log("Server is running on 3000");
 });
 
-app.use("/api/user", userRoute)
+//Route File
+import router from "./routes/index.route.js"
+app.use(router)
