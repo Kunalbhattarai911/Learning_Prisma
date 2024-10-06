@@ -52,7 +52,8 @@ export const getUsers = async (req, res) => {
         select : {
           id : true,
           title : true,
-          description : true
+          description : true,
+          comment_count : true
         }
       },
       comment : true,
@@ -62,7 +63,10 @@ export const getUsers = async (req, res) => {
           comment : true
         }
       }
-     }
+     },
+     orderBy : {
+      id : "asc"
+     },
     });
 
     if (!findUser) {

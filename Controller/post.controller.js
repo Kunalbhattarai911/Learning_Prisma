@@ -49,18 +49,75 @@ export const addPost = async (req, res) => {
 // Get All Posts
 export const getPosts = async (req, res) => {
   try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+
+    if (page <= 0) {
+      page = 1;
+    }
+
+    if (limit <= 0 || limit > 100) {
+      limit = 10;
+    }
+
+    const skip = (page - 1) * limit;
+    // const query = req.query.q
     // Fetch all posts from the database
     const posts = await prisma.post.findMany({
+      skip: skip,
+      take: limit,
       include: {
-        user: true, // Include user details if needed
+        comment: {
+          include: {
+            user: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        id: "asc",
+      },
+      where: {
+        //  AND : [
+        //   {
+        //     title : {
+        //       startsWith : "Saturday",
+        //       // endsWith : "day",
+        //       // equals : "Dell"
+        //     }
+        //   },
+        //   {
+        //     title : {
+        //       endsWith : "y"
+        //     }
+        //   }
+        //  ]
+        // description : {
+        //   search : query
+        // },
+        // title:{
+        //   search : query
+        // },
       },
     });
+
+    //to get the total post count
+    const totalPosts = await prisma.post.count();
+    const totalPages = Math.ceil(totalPosts/limit)
 
     // Return the posts in the response
     return res.status(200).json({
       message: "Posts fetched successfully",
       success: true,
       posts,
+      meta : {
+        totalPages,
+        currentPage : page,
+        limit : limit
+      }
     });
   } catch (error) {
     console.log(error);
